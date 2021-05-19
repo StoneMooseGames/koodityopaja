@@ -1,9 +1,0 @@
-D:\Koodityöpaja\Koodityopaja\ktpLibrary\bin\Debug\netstandard2.0\ktpLibrary.deps.json
-D:\Koodityöpaja\Koodityopaja\ktpLibrary\bin\Debug\netstandard2.0\ktpLibrary.dll
-D:\Koodityöpaja\Koodityopaja\ktpLibrary\bin\Debug\netstandard2.0\ktpLibrary.pdb
-D:\Koodityöpaja\Koodityopaja\ktpLibrary\obj\Debug\netstandard2.0\ktpLibrary.csprojAssemblyReference.cache
-D:\Koodityöpaja\Koodityopaja\ktpLibrary\obj\Debug\netstandard2.0\ktpLibrary.csproj.CoreCompileInputs.cache
-D:\Koodityöpaja\Koodityopaja\ktpLibrary\obj\Debug\netstandard2.0\ktpLibrary.AssemblyInfoInputs.cache
-D:\Koodityöpaja\Koodityopaja\ktpLibrary\obj\Debug\netstandard2.0\ktpLibrary.AssemblyInfo.cs
-D:\Koodityöpaja\Koodityopaja\ktpLibrary\obj\Debug\netstandard2.0\ktpLibrary.dll
-D:\Koodityöpaja\Koodityopaja\ktpLibrary\obj\Debug\netstandard2.0\ktpLibrary.pdb
