@@ -26,12 +26,14 @@ namespace NumeroPeli
         static int tavoiteLuku = 0;
         static int[] arvotutNumerot = new int[6];
         static string pelaajanNimi = "Pelaaja";
+        static bool onkoPeliLoppu = false;
+        static int pelaajanPisteet = 0;
 
         static void Main(string[] args)
         {
             Console.WriteLine(seed);
             Console.WriteLine("Tervetuloa!");
-            
+            Console.WriteLine("Hei, " + pelaajanNimi + " Aloitetaan peli!");
             Valikko();
             Console.WriteLine("Paina enter lopettaaksesi pelin");
             Console.ReadLine();
@@ -39,18 +41,41 @@ namespace NumeroPeli
 
         static void Valikko()
         {
-            Console.WriteLine("Hei, " + pelaajanNimi + " Aloitetaan peli!");
-            Console.WriteLine("(1) Aloita Peli");
-            Console.WriteLine("(2) Vaihda nimesi");
-            Console.WriteLine("(3) Tulosta ennätykset");
-            Console.WriteLine("(4) Lopeta Peli");
+            
+            while(!onkoPeliLoppu)
+            {
+                Console.WriteLine("Pelaajan " + pelaajanNimi + " pisteet tällä hetkellä: " + pelaajanPisteet);
+                Console.WriteLine("(1) Aloita Peli");
+                Console.WriteLine("(2) Vaihda nimesi");
+                Console.WriteLine("(3) Tulosta ennätykset");
+                Console.WriteLine("(4) Lopeta Peli");
+                try
+                {
+                    int valinta = Convert.ToInt32(Console.ReadLine());
+                    Valinnat(valinta);
+                    if(valinta<1 || valinta>4)
+                    {
+                        Console.WriteLine("Väärä valinta");
+                        continue;
+                    }
 
-            int valinta = Convert.ToInt32(Console.ReadLine());
-            Valinnat(valinta);
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Väärä valinta");
+                   
+                }
+                
+            }
+           
+            
+            
+            
         }
 
         static void Valinnat(int valinta)
             {
+
                 switch (valinta)
                 {
                     case 1:
@@ -68,10 +93,9 @@ namespace NumeroPeli
                         break;
                     case 4:
                         //Lopetus
-
+                        onkoPeliLoppu = true;
                         break;
                     default:
-                        Valikko();
                         break;
 
 
@@ -83,7 +107,9 @@ namespace NumeroPeli
         {
             Console.WriteLine("Peli aloitettu " + pelaajanNimi);
             //kuinka monta pientä lukua?
+            
             int pikkuLukuMaara = ArvoPienetLuvut();
+            
             //kuinka monta isoa lukua?
             ArvoIsotLuvut(pikkuLukuMaara);
             TulostaLuvut();
@@ -98,7 +124,7 @@ namespace NumeroPeli
             string vastaus = Console.ReadLine();
 
             //kun pelaaja on antanut vastauksen tarkistetaan onko kello vielä päällä ja sen jälkeen tarkistetaan oliko laskun tulos oikein vai lähellä
-            TarkistaVastaus(vastaus);
+            TarkistaVastaus(vastaus, tavoiteLuku);
             //annetaan pisteet
             //kysytään haluaako uuden kierroksen, jos ei palataan valikkoon
         }
@@ -107,14 +133,37 @@ namespace NumeroPeli
         {
             //arvotaan 1-6 kappaletta lukuväliltä 1-10
             Console.WriteLine("Kuinka monta pikkulukua haluat (1-6 kpl) ");
-            int pikkuLukuMaara = Convert.ToInt32(Console.ReadLine());
-            for(int i=0 ; i<pikkuLukuMaara;i++)
+            int pikkuLukuMaara = 0;
+            bool onkoAnnettuOikeaLuku = false;
+            while(!onkoAnnettuOikeaLuku)
             {
-                int pikkuLuku = SatunnaisLukuGeneraattori(0);
-                arvotutNumerot[i] = pikkuLuku;
-                Console.WriteLine(i + ". luku " + pikkuLuku);
+                try
+                {
+                    pikkuLukuMaara = Convert.ToInt32(Console.ReadLine());
+                    if(pikkuLukuMaara <1 || pikkuLukuMaara > 6)
+                    {
+                        Console.WriteLine("Lukuväli on 1-6 numeroa, anna uusi numero");
+                        continue;
+                    }
+                    for (int i = 0; i < pikkuLukuMaara; i++)
+                    {
+                        int pikkuLuku = SatunnaisLukuGeneraattori(0);
+                        arvotutNumerot[i] = pikkuLuku;
+                        Console.WriteLine(i + ". luku " + pikkuLuku);
+
+                    }
+                    onkoAnnettuOikeaLuku = true;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("et antanut kokonaislukua");
+                    continue;
+                    
+                }
             }
             return pikkuLukuMaara;
+
+
         }
 
         static void ArvoIsotLuvut(int pikkuLukuMaara)
@@ -146,9 +195,29 @@ namespace NumeroPeli
             Console.WriteLine("Aika alkaa nyt!");
         }
 
-        static void TarkistaVastaus(string vastaus)
+        static void TarkistaVastaus(string vastaus, int tavoiteLuku)
         {
-            Console.WriteLine("Annoit yhtälön " + vastaus);
+            //TODO mieti millaisessa formaatissa haluat vastauksen ja miten tarkistat.
+            //nyt vastaus tulee pelkkänä lukuna, eikä yhtälön toimivuudesta tai siitä miten olet lukuun päässyt ole tarkistusta
+
+            Console.WriteLine("annoit vastauksen: " + vastaus);
+            Console.WriteLine("Tavoite oli saada: " + tavoiteLuku);
+            int loppuTulos = Convert.ToInt32(vastaus) - tavoiteLuku;
+            if(loppuTulos == 0)
+            {
+                Console.WriteLine("onneksi olkoon, sait täsmälleen oikean luvun, 10 pistettä");
+                pelaajanPisteet += 10;
+            }
+            else
+            {
+                if (loppuTulos <= 10 && loppuTulos >= -10)
+                {
+                    loppuTulos = Math.Abs(loppuTulos);
+                    Console.WriteLine("vastauksesi heitti " + loppuTulos + " pisteen arvoisesti");
+                    pelaajanPisteet += loppuTulos;
+                }
+                else Console.WriteLine("jäit liian kauas tavoiteluvusta, ei pisteitä");
+            }
             //tarkistetaan oliko pelaajan lasku oikein
         }
         static void PisteenLasku()
@@ -162,21 +231,21 @@ namespace NumeroPeli
             int arvottuNumero = 0;
             int[] arvottavatNumerot = { 25, 50, 75, 100 };
             switch (arvontamoodi)
-            {
-                case 0:
-                    arvottuNumero = satunnaisLuku.Next(1, 10);
-                    return arvottuNumero;
-                case 1:
-                    int valintaTaulukosta = satunnaisLuku.Next(0, 3);
-                    arvottuNumero = arvottavatNumerot[valintaTaulukosta];
-                    return arvottuNumero;
-                case 2:
-                    arvottuNumero = satunnaisLuku.Next(100, 999);
-                    return arvottuNumero;
-                default:
-                    return 0;
-                    
-            }
+                {
+                    case 0:
+                        arvottuNumero = satunnaisLuku.Next(1, 10);
+                        return arvottuNumero;
+                    case 1:
+                        int valintaTaulukosta = satunnaisLuku.Next(0, 3);
+                        arvottuNumero = arvottavatNumerot[valintaTaulukosta];
+                        return arvottuNumero;
+                    case 2:
+                        arvottuNumero = satunnaisLuku.Next(100, 999);
+                        return arvottuNumero;
+                    default:
+                        return 0;
+                }
+            
                        
         }
         static void TulostaLuvut()
