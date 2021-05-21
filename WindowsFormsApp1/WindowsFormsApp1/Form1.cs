@@ -24,14 +24,16 @@ namespace WindowsFormsApp1
         static List<Button> nappiLista = new List<Button>();
         static List<Button> alempiNappiLista = new List<Button>();
         static List<Button> aritmetiikkaNapit = new List<Button>();
-        static List<String> aritmetiikkaMerkit = new List<String>();
+        static List<string> aritmetiikkaMerkit = new List<string>();
+        static List<Label> sulkeet = new List<Label>();
         static Label tavoiteNumeroCanva = new Label();
         static Label kello = new Label();
         static int kelloAika = 30;
         static Timer kelloAjastin = new Timer();
         static Timer randomNumeroLabelinTImer = new Timer();
         static TextBox pelaajanLoppuTulos = new TextBox();
-        static Label virheIkkuna = new Label();
+        static Label debug = new Label();
+        static bool[] sulkeetEnabled = new bool[10];
 
 
 
@@ -60,6 +62,16 @@ namespace WindowsFormsApp1
             aritmetiikkaMerkit.Add("-");
             aritmetiikkaMerkit.Add("*");
             aritmetiikkaMerkit.Add("/");
+            sulkeet.Add(label12);
+            sulkeet.Add(label13);
+            sulkeet.Add(label21);
+            sulkeet.Add(label14);
+            sulkeet.Add(label20);
+            sulkeet.Add(label15);
+            sulkeet.Add(label19);
+            sulkeet.Add(label16);
+            sulkeet.Add(label18);
+            sulkeet.Add(label22);
 
             label10.Text = "";
             label6.Text = pelaajanPisteet.ToString();
@@ -70,7 +82,7 @@ namespace WindowsFormsApp1
             label3.Text = kelloAika.ToString();
             kelloAjastin = timer1;
             
-            virheIkkuna = label11;
+            debug = label11;
             
         }
 
@@ -88,14 +100,20 @@ namespace WindowsFormsApp1
             {
                 aritmetiikkaNapit[i].Text = "";
             }
+            for (int i = 0; i < sulkeet.Count; i++)
+            {
+                sulkeet[i].ForeColor = Color.Teal;
+            }
         }
 
 
         //Aloita
         private void button2_Click(object sender, EventArgs e)
         {
-            button20.Enabled = false; //et voi enää valita pienten numeroiden määrää
-            button2.Enabled = false; //et voi enää painaa aloita nappia kun peli on päällä
+            button20.Enabled = false;
+            //et voi enää valita pienten numeroiden määrää
+            button2.Enabled = false;
+            //et voi enää painaa aloita nappia kun peli on päällä
             PeliLooppi();
         }
 
@@ -201,7 +219,7 @@ namespace WindowsFormsApp1
 
         static void TarkistaVastaus()
         {
-            //TODO mieti millaisessa formaatissa haluat vastauksen ja miten tarkistat.
+            //mieti millaisessa formaatissa haluat vastauksen ja miten tarkistat.
             //nyt vastaus tulee pelkkänä lukuna, eikä yhtälön toimivuudesta tai siitä miten olet lukuun päässyt ole tarkistusta
             //tarkistetaan oliko pelaajan lasku oikein
             
@@ -211,6 +229,11 @@ namespace WindowsFormsApp1
         static void PisteenLasku()
         {
             //annetaan pisteet sen mukaan miten lasku onnistui
+        }
+
+        static void AloitaUusiPeli()
+        {
+            //aloitetaan uusi peli
         }
 
         static int SatunnaisLukuGeneraattori(int arvontamoodi)
@@ -262,7 +285,64 @@ namespace WindowsFormsApp1
 
         private void timer2_Tick(object sender, EventArgs e)
         {
-            
+            //tällä on tarkoitus laittaa numeronvalintalaitteeseen pientä kestoa ennenkuin varsinainen numero paljastuu
+        }
+
+        
+
+        private int EtsiTyhjaNappiAlaRivista()
+        {
+            int napinNumero = -1;
+            for (int i = alempiNappiLista.Count -1 ; i>=0; i--)
+            {
+                if(alempiNappiLista[i].Text == "")
+                {
+                    napinNumero = i;
+                }
+            }
+            return napinNumero;
+        }
+
+        private int EtsiTyhjaNappiYlaRivista()
+        {
+            int napinNumero = -1;
+            for (int i = nappiLista.Count - 1; i >= 0; i--)
+            {
+                if (nappiLista[i].Text == "")
+                {
+                    napinNumero = i;
+                }
+            }
+            return napinNumero;
+        }
+
+       
+
+        private void VaihdaMerkkia(Button NappiNro)
+        {
+            switch (NappiNro.Text)
+            {
+                case "":
+                    NappiNro.Text = "/";
+                    
+                    break;
+                case "/":
+                    NappiNro.Text = "+";
+                   
+                    break;
+                case "+":
+                    NappiNro.Text = "-";
+                    
+                    break;
+                case "-":
+                    NappiNro.Text = "X";
+                    
+                    break;
+                case "X":
+                    NappiNro.Text = "";
+                    break;
+
+            }
         }
 
         private void button14_Click(object sender, EventArgs e)
@@ -324,33 +404,6 @@ namespace WindowsFormsApp1
                 nappiLista[5].Text = "";
             }
         }
-
-        private int EtsiTyhjaNappiAlaRivista()
-        {
-            int napinNumero = -1;
-            for (int i = alempiNappiLista.Count -1 ; i>=0; i--)
-            {
-                if(alempiNappiLista[i].Text == "")
-                {
-                    napinNumero = i;
-                }
-            }
-            return napinNumero;
-        }
-
-        private int EtsiTyhjaNappiYlaRivista()
-        {
-            int napinNumero = -1;
-            for (int i = nappiLista.Count - 1; i >= 0; i--)
-            {
-                if (nappiLista[i].Text == "")
-                {
-                    napinNumero = i;
-                }
-            }
-            return napinNumero;
-        }
-
         private void button8_Click(object sender, EventArgs e)
         {
             int etsiVapaaRuutu = EtsiTyhjaNappiYlaRivista();
@@ -411,33 +464,6 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void VaihdaMerkkia(Button NappiNro)
-        {
-            switch (NappiNro.Text)
-            {
-                case "":
-                    NappiNro.Text = "/";
-                    
-                    break;
-                case "/":
-                    NappiNro.Text = "+";
-                   
-                    break;
-                case "+":
-                    NappiNro.Text = "-";
-                    
-                    break;
-                case "-":
-                    NappiNro.Text = "X";
-                    
-                    break;
-                case "X":
-                    NappiNro.Text = "";
-                    break;
-
-            }
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             VaihdaMerkkia(button1);
@@ -461,6 +487,148 @@ namespace WindowsFormsApp1
         private void button7_Click(object sender, EventArgs e)
         {
             VaihdaMerkkia(button7);
+        }
+
+        private void label12_Click(object sender, EventArgs e)
+        {
+            if (label12.ForeColor == Color.Teal)
+            {
+                label12.ForeColor = Color.Black;
+                sulkeetEnabled[0] = true;
+            }
+            else
+            {
+                label12.ForeColor = Color.Teal;
+                sulkeetEnabled[0] = false;
+            }
+            
+
+        }
+
+        private void label13_Click(object sender, EventArgs e)
+        {
+            if (label13.ForeColor == Color.Teal)
+            {
+                label13.ForeColor = Color.Black;
+                sulkeetEnabled[1] = true;
+            }
+            else
+            {
+                label13.ForeColor = Color.Teal;
+                sulkeetEnabled[1] = false;
+            }
+        }
+
+        private void label21_Click(object sender, EventArgs e)
+        {
+            if (label21.ForeColor == Color.Teal)
+            {
+                label21.ForeColor = Color.Black;
+                sulkeetEnabled[2] = true;
+            }
+            else
+            {
+                label21.ForeColor = Color.Teal;
+                sulkeetEnabled[2] = false;
+            }
+        }
+
+        private void label14_Click(object sender, EventArgs e)
+        {
+            if (label14.ForeColor == Color.Teal)
+            {
+                label14.ForeColor = Color.Black;
+                sulkeetEnabled[3] = true;
+            }
+            else
+            {
+                label14.ForeColor = Color.Teal;
+                sulkeetEnabled[3] = false;
+            }
+        }
+
+        private void label20_Click(object sender, EventArgs e)
+        {
+            if (label20.ForeColor == Color.Teal)
+            {
+                label20.ForeColor = Color.Black;
+                sulkeetEnabled[4] = true;
+            }
+            else
+            {
+                label20.ForeColor = Color.Teal;
+                sulkeetEnabled[4] = false;
+            }
+        }
+
+        private void label15_Click(object sender, EventArgs e)
+        {
+            if (label15.ForeColor == Color.Teal)
+            {
+                label15.ForeColor = Color.Black;
+                sulkeetEnabled[5] = true;
+            }
+            else
+            {
+                label15.ForeColor = Color.Teal;
+                sulkeetEnabled[5] = false;
+            }
+        }
+
+        private void label19_Click(object sender, EventArgs e)
+        {
+            if (label19.ForeColor == Color.Teal)
+            {
+                label19.ForeColor = Color.Black;
+                sulkeetEnabled[6] = true;
+            }
+            else
+            {
+                label19.ForeColor = Color.Teal;
+                sulkeetEnabled[6] = false;
+            }
+        }
+
+        private void label16_Click(object sender, EventArgs e)
+        {
+            if (label16.ForeColor == Color.Teal)
+            {
+                label16.ForeColor = Color.Black;
+                sulkeetEnabled[7] = true;
+            }
+            else
+            {
+                label16.ForeColor = Color.Teal;
+                sulkeetEnabled[7] = false;
+            }
+        }
+
+        private void label18_Click(object sender, EventArgs e)
+        {
+            if (label18.ForeColor == Color.Teal)
+            {
+                label18.ForeColor = Color.Black;
+                sulkeetEnabled[8] = true;
+            }
+            else
+            {
+                label18.ForeColor = Color.Teal;
+                sulkeetEnabled[8] = false;
+            }
+        }
+
+        private void label22_Click(object sender, EventArgs e)
+        {
+            if (label22.ForeColor == Color.Teal)
+            {
+                label22.ForeColor = Color.Black;
+                sulkeetEnabled[9] = true;
+            }
+            else
+            {
+                label22.ForeColor = Color.Teal;
+                sulkeetEnabled[9] = false;
+            }
         }
     }
 }
