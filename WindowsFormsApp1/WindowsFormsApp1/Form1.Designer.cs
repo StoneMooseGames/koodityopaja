@@ -49,8 +49,6 @@
             this.button12 = new System.Windows.Forms.Button();
             this.button13 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
@@ -72,6 +70,8 @@
             this.label20 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -155,9 +155,8 @@
             this.label5.Font = new System.Drawing.Font("AcmeFont", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(1141, 316);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(157, 79);
+            this.label5.Size = new System.Drawing.Size(0, 79);
             this.label5.TabIndex = 40;
-            this.label5.Text = "000";
             // 
             // button14
             // 
@@ -290,26 +289,6 @@
             this.button3.Text = "Lopeta";
             this.button3.UseVisualStyleBackColor = true;
             // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("AcmeFont", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(219, 46);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(150, 46);
-            this.label7.TabIndex = 54;
-            this.label7.Text = "Pisteet";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("AcmeFont", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(375, 46);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(44, 46);
-            this.label6.TabIndex = 55;
-            this.label6.Text = "0";
-            // 
             // button4
             // 
             this.button4.Font = new System.Drawing.Font("AcmeFont", 12.25F);
@@ -379,7 +358,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("AcmeFont", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(219, 10);
+            this.label9.Location = new System.Drawing.Point(63, 20);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(104, 46);
             this.label9.TabIndex = 62;
@@ -407,9 +386,10 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(53, 511);
+            this.label11.Font = new System.Drawing.Font("AcmeFont", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(58, 492);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(76, 13);
+            this.label11.Size = new System.Drawing.Size(125, 20);
             this.label11.TabIndex = 65;
             this.label11.Text = "debug window";
             // 
@@ -533,12 +513,33 @@
             this.label22.Text = ")";
             this.label22.Click += new System.EventHandler(this.label22_Click);
             // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("AcmeFont", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.Location = new System.Drawing.Point(1076, 415);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(65, 20);
+            this.label17.TabIndex = 77;
+            this.label17.Text = "label17";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("AcmeFont", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(68, 66);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(0, 20);
+            this.label6.TabIndex = 78;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.HotTrack;
             this.ClientSize = new System.Drawing.Size(1327, 554);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label17);
             this.Controls.Add(this.label22);
             this.Controls.Add(this.label21);
             this.Controls.Add(this.label20);
@@ -558,8 +559,6 @@
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label7);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button13);
             this.Controls.Add(this.button12);
@@ -581,7 +580,6 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Name = "Form1";
-            this.Text = "NumeroPeli";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -610,8 +608,6 @@
         private System.Windows.Forms.Button button12;
         private System.Windows.Forms.Button button13;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
@@ -633,6 +629,8 @@
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label6;
     }
 }
 

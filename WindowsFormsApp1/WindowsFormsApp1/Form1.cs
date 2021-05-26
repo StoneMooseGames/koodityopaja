@@ -18,8 +18,9 @@ namespace WindowsFormsApp1
         static int tavoiteLuku = 0;
         static int[] arvotutNumerot = new int[6];
         static string pelaajanNimi = "Mika";
-        
+
         static int pelaajanPisteet = 0;
+        static Label pelaajanPisteetCanva = new Label();
         static int pikkuLukujenMaara = 1;
         static List<Button> nappiLista = new List<Button>();
         static List<Button> alempiNappiLista = new List<Button>();
@@ -28,14 +29,21 @@ namespace WindowsFormsApp1
         static List<Label> sulkeet = new List<Label>();
         static Label tavoiteNumeroCanva = new Label();
         static Label kello = new Label();
-        static int kelloAika = 30;
+        static int kelloAika = 60;
         static Timer kelloAjastin = new Timer();
         static Timer randomNumeroLabelinTImer = new Timer();
         static TextBox pelaajanLoppuTulos = new TextBox();
         static Label debug = new Label();
         static bool[] sulkeetEnabled = new bool[10];
-
-
+        static Label vastausRuutu = new Label();
+        static int[] aritmetiikkaTilat = new int[5];
+        static bool isGameOver = false;      
+        static Button AloitaPainike = new Button();
+        static Button numeroidenMaaraPainike = new Button();
+        static double loppuTulos = 0;
+        static Label vastausPelaajalle = new Label();
+        static Label aikaIlmoitus = new Label();
+        static Label pisteet = new Label();
 
 
         public Form1()
@@ -72,22 +80,36 @@ namespace WindowsFormsApp1
             sulkeet.Add(label16);
             sulkeet.Add(label18);
             sulkeet.Add(label22);
+            vastausRuutu = label5;
 
             label10.Text = "";
-            label6.Text = pelaajanPisteet.ToString();
+            pelaajanPisteetCanva.Text = pelaajanPisteet.ToString();
             label9.Text = pelaajanNimi;
             tavoiteNumeroCanva = label2;
             kello = label3;
             randomNumeroLabelinTImer = timer2;
             label3.Text = kelloAika.ToString();
             kelloAjastin = timer1;
-            
+            AloitaPainike = button2;
+            numeroidenMaaraPainike = button20;
             debug = label11;
-            
+            debug.Text = "";
+            vastausPelaajalle = label17;
+            pisteet = label6;
+            aikaIlmoitus = label10;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            TyhjennaPeli();
+
+        }
+
+        static void TyhjennaPeli()
+        {
+            
+            
+            vastausPelaajalle.Text = "";
             for (int i = 0; i < nappiLista.Count; i++)
             {
                 nappiLista[i].Text = "";
@@ -104,17 +126,42 @@ namespace WindowsFormsApp1
             {
                 sulkeet[i].ForeColor = Color.Teal;
             }
+            for (int i = 0; i <= 9; i++)
+            {
+                sulkeetEnabled[i] = false;
+                sulkeet[i].Enabled = true;
+                if (i % 2 == 0)
+                {
+                    sulkeet[i].Text = ")";
+                }
+                else sulkeet[i].Text = "(";
+            }
+            sulkeet[0].Text = "(";
+            sulkeet[9].Text = ")";
+            vastausRuutu.Text = "000";
+            aikaIlmoitus.Text = "";
+            
+
         }
-
-
         //Aloita
         private void button2_Click(object sender, EventArgs e)
         {
+            TyhjennaPeli();
+            AloitaUusiPeli();
+            kelloAika = 60; //TODO tämä pitää vielä muuttaa sellaiseksi että saadaan vaikeusastetta kun uudelle kierrokselle vähennetään ajasta esim 5sek
+            int pikkuLukuMaara = ArvoPienetLuvut();
+            ArvoIsotLuvut(pikkuLukuMaara);
+
+            tavoiteLuku = ArvoLoppuTulos();
+            kelloAjastin.Start();
             button20.Enabled = false;
             //et voi enää valita pienten numeroiden määrää
             button2.Enabled = false;
             //et voi enää painaa aloita nappia kun peli on päällä
-            PeliLooppi();
+            
+            
+            
+
         }
 
         //Valitse pienten numeroiden määrä
@@ -150,42 +197,34 @@ namespace WindowsFormsApp1
             }
 
         }
-        static void PeliLooppi()
-        {
+ 
             
-            int pikkuLukuMaara = ArvoPienetLuvut();
-            ArvoIsotLuvut(pikkuLukuMaara);
 
-            int tavoiteLuku = ArvoLoppuTulos();
-            PeliKelloKayntiin();
-            TarkistaVastaus();
-            //annetaan pisteet
-            //kysytään haluaako uuden kierroksen, jos ei palataan valikkoon
-        }
+        
         static int ArvoPienetLuvut()
         {
             //arvotaan 1-6 kappaletta lukuväliltä 1-10
-            
+
             int pikkuLukuMaara = 0;
-           
+
             pikkuLukuMaara = pikkuLukujenMaara;
-                   
-                    for (int i = 0; i <= pikkuLukuMaara; i++)
-                    {
-                        int pikkuLuku = SatunnaisLukuGeneraattori(0);
-                        arvotutNumerot[i] = pikkuLuku;
-                        nappiLista[i].Text = pikkuLuku.ToString();
-                    }
-              
-                
-            
+
+            for (int i = 0; i <= pikkuLukuMaara; i++)
+            {
+                int pikkuLuku = SatunnaisLukuGeneraattori(0);
+                arvotutNumerot[i] = pikkuLuku;
+                nappiLista[i].Text = pikkuLuku.ToString();
+            }
+
+
+
             return pikkuLukuMaara;
         }
         static void ArvoIsotLuvut(int pikkuLukuMaara)
         {
             //arvotaan 1-6 kappaletta luvuista 25,50,75,100, riippuen siitä kuinka monta pikkulukua on otettu
             int isoLukuMaara = 6 - pikkuLukuMaara;
-            
+
             for (int i = pikkuLukuMaara; i < 6; i++)
             {
                 int isoLuku = SatunnaisLukuGeneraattori(1);
@@ -202,37 +241,107 @@ namespace WindowsFormsApp1
             tavoiteNumeroCanva.Text = tavoiteLuku.ToString();
             return tavoiteLuku;
 
-
         }
 
-        static void PeliKelloKayntiin()
-        {
-            
-            kelloAjastin.Start();
-            
-        }
-
-        static void LaskeLoppuTulos()
-        {
-            //lasketaan lopputulos reaaliajassa sitä mukaa kun pelaaja vaihtaa numeroita ja merkkejä
-        }
+        
 
         static void TarkistaVastaus()
         {
             //mieti millaisessa formaatissa haluat vastauksen ja miten tarkistat.
-            //nyt vastaus tulee pelkkänä lukuna, eikä yhtälön toimivuudesta tai siitä miten olet lukuun päässyt ole tarkistusta
+            //nyt vastaus tulee toistaiseksi väärin, koska sulkeita ei ole vielä implementoitu
             //tarkistetaan oliko pelaajan lasku oikein
-            
 
+            isGameOver = true;
+            korjaaStringi();
+            string laskuTemp = sulkeet[0].Text + alempiNappiLista[0].Text + aritmetiikkaNapit[0].Text + sulkeet[1].Text + alempiNappiLista[1].Text + sulkeet[2].Text + aritmetiikkaNapit[1].Text + sulkeet[3].Text + alempiNappiLista[2].Text + sulkeet[4].Text + aritmetiikkaNapit[2].Text + sulkeet[5].Text + alempiNappiLista[3].Text + sulkeet[6].Text + aritmetiikkaNapit[3].Text + sulkeet[7].Text + alempiNappiLista[4].Text + sulkeet[8].Text + aritmetiikkaNapit[4].Text + alempiNappiLista[5].Text + sulkeet[9].Text;
+
+            string arvo = new DataTable().Compute(laskuTemp, null).ToString();
             
+            try
+            {
+                loppuTulos = Convert.ToDouble(arvo);
+                vastausRuutu.Text = arvo;
+                debug.Text = laskuTemp + "=" + loppuTulos.ToString();
+                
+            }
+            catch
+            {
+                debug.Text = "Annoit vastauksen väärin";
+            }
+                
         }
+        static void korjaaStringi()
+        {
+            
+            for (int i=0;i<5;i++)
+            {
+                if (aritmetiikkaNapit[i].Text == "X") aritmetiikkaNapit[i].Text = "*";
+                if (aritmetiikkaNapit[i].Text == "") aritmetiikkaNapit[i].Text = "+";
+                
+            }
+            for(int i=0;i<=9;i++)
+            {
+                if (!sulkeetEnabled[i]) sulkeet[i].Text = "";
+            }
+            for(int i=0;i<=5;i++)
+            {
+                if (alempiNappiLista[i].Text == "") alempiNappiLista[i].Text = "0";
+            }
+       
+        }
+
         static void PisteenLasku()
         {
+            
+            double lisattavatPisteet = 0;
+            double erotus = 0;
+            if (loppuTulos > tavoiteLuku)
+            {
+                erotus = loppuTulos - tavoiteLuku;
+            }
+            else erotus =  tavoiteLuku - loppuTulos;
+
+            if (erotus > 10)
+            {
+                vastausPelaajalle.Text = "jäit liian kauas tavoitteesta. ei pisteitä";
+                lisattavatPisteet = 0;
+            }
+           
+            else
+            {
+                lisattavatPisteet = 10 - erotus;
+                vastausPelaajalle.Text = "sait pisteitä:" + lisattavatPisteet.ToString();
+            }
             //annetaan pisteet sen mukaan miten lasku onnistui
+            
+            pelaajanPisteet = Convert.ToInt32(pelaajanPisteet) + Convert.ToInt32(lisattavatPisteet);
+            pelaajanPisteetCanva.Text = pelaajanPisteet.ToString();
+            pisteet.Text = "Pelajaan kokonaispisteet: " + pelaajanPisteet.ToString();
+            isGameOver = false;
+            AloitaUusiPeli();
+
         }
 
+        
         static void AloitaUusiPeli()
         {
+           
+            AloitaPainike.Enabled = true;
+           
+            numeroidenMaaraPainike.Enabled = true;
+            for (int i = 0; i < nappiLista.Count; i++)
+            {
+                nappiLista[i].Enabled = true;
+                alempiNappiLista[i].Enabled = true;
+
+            }
+            for (int i = 0; i < aritmetiikkaNapit.Count; i++)
+            {
+                aritmetiikkaNapit[i].Enabled = true;
+
+            }
+
+
             //aloitetaan uusi peli
         }
 
@@ -267,7 +376,10 @@ namespace WindowsFormsApp1
             if (kelloAika == 0)
             {
                 kelloAjastin.Stop();
+                isGameOver = true;
                 label10.Text = "Aika Loppui";
+                TarkistaVastaus();
+                PisteenLasku();
                 for (int i = 0; i < nappiLista.Count; i++)
                 {
                     nappiLista[i].Enabled = false;
