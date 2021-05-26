@@ -1,4 +1,25 @@
-﻿using System;
+﻿//NumeroPeli 1.0
+//© Mika Ahlsten PTIVIS20E 
+
+
+//Peli jossa käyttäjältä ensin pyydetään valitsemaan 6 numeroa.Vaihtoehtona joko pieniä(luvut 1-10) 
+//tai suuria(luvut 25,50,75 ja 100) Pelaaja valitsee esim. 2 pientä ja 4 suurta.Sen jälkeen kone arpoo
+//luvut luku-alueilta.Esim kyseisessä tapauksessa arvotut luvut voivat olla 2,4,25,25,75 ja 100. Tämä 
+//jälkeen kone arpoo vielä luvun välilä 100-999. Sen jälkeen pelaajalla on 60 sek aikaa ratkaista lukuja
+//ja peruslaskutoimituksia käyttäen lopputulos.Kutakin lukua voi käyttää vain kerran yhtälössä.
+//Pelissä alkaa seuraava kierros kun tehtävä on ratkaistu ja valittu uudet numerot. Tällöin kellosta
+//vähennetään 5 sekuntia. Viimeinen kierros alkaa kun pelikellossa on 5 sek jäljellä ratkaisuaikaa.
+
+//Esimerkkipeli: 
+//    pelaaja haluaa 4 pientä ja 2 suurta.Kone arpoo luvut 2,5,5,8,25,100 sekä lopputuloksen 377. 
+//    Kello lähtee käymään.Pelaajan tehtävä on ratkoa miten päästään lukuun 377 käyttäen +,-,* tai / -laskuja.
+//    Kyseiseen lukuun pääsisi esimerkiksi 8 * 25 + 100 - 5 * 5 + 2. Pisteitä pelaaja saa sen mukaan kuinka
+//    kauaksi pelaaja pääsee lopputuloksesta. Täsmälleen oikeasta10 pistettä, ja vähennetään siitä pisteitä
+//    sen mukaan kuinka kauaksi pelaaja pääsee numerosta.Esim. 375 tai 379 antaisi 8 pistettä. Pisteet 
+//    lisätään edellisen kierroksen pisteisiin.
+
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,6 +28,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Media;
 
 namespace WindowsFormsApp1
 {
@@ -29,7 +51,8 @@ namespace WindowsFormsApp1
         static List<Label> sulkeet = new List<Label>();
         static Label tavoiteNumeroCanva = new Label();
         static Label kello = new Label();
-        static int kelloAika = 60;
+        static int kelloAika = 65;
+        static int ajastimenAika = 65;
         static Timer kelloAjastin = new Timer();
         static Timer randomNumeroLabelinTImer = new Timer();
         static TextBox pelaajanLoppuTulos = new TextBox();
@@ -45,7 +68,12 @@ namespace WindowsFormsApp1
         static Label aikaIlmoitus = new Label();
         static Label pisteet = new Label();
         static Button pelaajaNappi = new Button();
-        
+        static Label edellisenKierroksenPisteetLabel = new Label();
+        static int edellisenKierroksenPisteet;
+        //Sounds
+        static SoundPlayer tenPoints = new SoundPlayer(@"10points.wav");
+        static SoundPlayer points = new SoundPlayer(@"points.wav");
+        static SoundPlayer tick = new SoundPlayer(@"tick.wav");
 
 
         public Form1()
@@ -100,13 +128,17 @@ namespace WindowsFormsApp1
             vastausPelaajalle = label17;
             pisteet = label6;
             aikaIlmoitus = label10;
+            kello.Text = (kelloAika- 5).ToString();
+            edellisenKierroksenPisteet = 0;
+            edellisenKierroksenPisteetLabel = label7;
+            edellisenKierroksenPisteetLabel.Text = "";
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             
             TyhjennaPeli();
-
+ 
         }
 
         static void TyhjennaPeli()
@@ -152,7 +184,17 @@ namespace WindowsFormsApp1
         {
             TyhjennaPeli();
             AloitaUusiPeli();
-            kelloAika = 60; //TODO tämä pitää vielä muuttaa sellaiseksi että saadaan vaikeusastetta kun uudelle kierrokselle vähennetään ajasta esim 5sek
+            ajastimenAika -= 5;
+            if (ajastimenAika == 0)
+            {
+                edellisenKierroksenPisteet = pelaajanPisteet;
+                aikaIlmoitus.Text = "Uusi peli alkoi";
+                edellisenKierroksenPisteetLabel.Text = "Edellisen kierroksen pisteet: " + edellisenKierroksenPisteet.ToString();
+                ajastimenAika = 60;
+                pelaajanPisteet = 0;
+                pisteet.Text = "Pelajaan kokonaispisteet: " + pelaajanPisteet.ToString();
+            }
+            kelloAika = ajastimenAika; 
             int pikkuLukuMaara = ArvoPienetLuvut();
             ArvoIsotLuvut(pikkuLukuMaara);
 
@@ -162,10 +204,7 @@ namespace WindowsFormsApp1
             //et voi enää valita pienten numeroiden määrää
             button2.Enabled = false;
             //et voi enää painaa aloita nappia kun peli on päällä
-            
-            
-            
-
+  
         }
 
         //Valitse pienten numeroiden määrä
@@ -247,22 +286,16 @@ namespace WindowsFormsApp1
 
         }
 
-        
-
         static void TarkistaVastaus()
         {
-            //mieti millaisessa formaatissa haluat vastauksen ja miten tarkistat.
-            //nyt vastaus tulee toistaiseksi väärin, koska sulkeita ei ole vielä implementoitu
             //tarkistetaan oliko pelaajan lasku oikein
-
             isGameOver = true;
             korjaaStringi();
+            //alla oleva string on todella pitkä, mietin saisiko sitä lyhennettyä
             string laskuTemp = sulkeet[0].Text + alempiNappiLista[0].Text + aritmetiikkaNapit[0].Text + sulkeet[1].Text + alempiNappiLista[1].Text + sulkeet[2].Text + aritmetiikkaNapit[1].Text + sulkeet[3].Text + alempiNappiLista[2].Text + sulkeet[4].Text + aritmetiikkaNapit[2].Text + sulkeet[5].Text + alempiNappiLista[3].Text + sulkeet[6].Text + aritmetiikkaNapit[3].Text + sulkeet[7].Text + alempiNappiLista[4].Text + sulkeet[8].Text + aritmetiikkaNapit[4].Text + alempiNappiLista[5].Text + sulkeet[9].Text;
-
-            string arvo = new DataTable().Compute(laskuTemp, null).ToString();
-            
             try
             {
+                string arvo = new DataTable().Compute(laskuTemp, null).ToString();
                 loppuTulos = Convert.ToDouble(arvo);
                 vastausRuutu.Text = arvo;
                 debug.Text = laskuTemp + "=" + loppuTulos.ToString();
@@ -270,7 +303,7 @@ namespace WindowsFormsApp1
             }
             catch
             {
-                debug.Text = "Annoit vastauksen väärin";
+                debug.Text = "Virhe vastauksen annossa"; //Tämä tulee enää vain silloin kun sulkeet ovat laitettu väärin
             }
                 
         }
@@ -313,6 +346,8 @@ namespace WindowsFormsApp1
            
             else
             {
+                if(erotus == 0) tenPoints.Play();
+                if(erotus <=10 && erotus >0) points.Play();
                 lisattavatPisteet = 10 - erotus;
                 vastausPelaajalle.Text = "sait pisteitä:" + lisattavatPisteet.ToString();
             }
@@ -325,8 +360,7 @@ namespace WindowsFormsApp1
             AloitaUusiPeli();
 
         }
-
-        
+      
         static void AloitaUusiPeli()
         {
            
@@ -345,13 +379,11 @@ namespace WindowsFormsApp1
 
             }
 
-
-            //aloitetaan uusi peli
         }
 
         static int SatunnaisLukuGeneraattori(int arvontamoodi)
         {
-            //Jotta saataisiin mahdollisimman random numero, ehkä kellonaika numerona voisi olla mainio seedille randomiin?
+            //Jotta saataisiin mahdollisimman random numero, ehkä kellonaika numerona voisi olla mainio seedille randomiin? (rivi 16-17)
             int arvottuNumero = 0;
             int[] arvottavatNumerot = { 25, 50, 75, 100 };
             switch (arvontamoodi)
@@ -376,6 +408,7 @@ namespace WindowsFormsApp1
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            tick.Play();
             kelloAika--;
             if (kelloAika == 0)
             {
@@ -431,8 +464,6 @@ namespace WindowsFormsApp1
             }
             return napinNumero;
         }
-
-       
 
         private void VaihdaMerkkia(Button NappiNro)
         {
