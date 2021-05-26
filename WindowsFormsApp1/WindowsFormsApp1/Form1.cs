@@ -44,6 +44,8 @@ namespace WindowsFormsApp1
         static Label vastausPelaajalle = new Label();
         static Label aikaIlmoitus = new Label();
         static Label pisteet = new Label();
+        static Button pelaajaNappi = new Button();
+        
 
 
         public Form1()
@@ -84,7 +86,8 @@ namespace WindowsFormsApp1
 
             label10.Text = "";
             pelaajanPisteetCanva.Text = pelaajanPisteet.ToString();
-            label9.Text = pelaajanNimi;
+            
+            pelaajaNappi.Text = pelaajanNimi;
             tavoiteNumeroCanva = label2;
             kello = label3;
             randomNumeroLabelinTImer = timer2;
@@ -101,6 +104,7 @@ namespace WindowsFormsApp1
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            
             TyhjennaPeli();
 
         }
@@ -741,6 +745,11 @@ namespace WindowsFormsApp1
                 label22.ForeColor = Color.Teal;
                 sulkeetEnabled[9] = false;
             }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }
